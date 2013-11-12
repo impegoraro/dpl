@@ -1,3 +1,4 @@
+#!/usr/bin/python2
 #
 # dropbox-links.py
 # Copyright (C) 2013  Ilan Pegoraro
