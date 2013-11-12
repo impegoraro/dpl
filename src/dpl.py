@@ -19,6 +19,7 @@
 from gi.repository import Gtk
 from gi.repository import Gdk
 import os
+import re
 import subprocess
 
 
@@ -33,13 +34,20 @@ class  ListViewTestApp:
         self.statusIcon.set_from_stock(Gtk.STOCK_ABOUT)
         self.statusIcon.set_tooltip_text("Dropbox link detector")
         self.statusIcon.set_has_tooltip(True)
+       
         
         self.dirpath = dirpath
         self.clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
         
+        self.entryFilter = builder.get_object('entryFilter')
         self.btnCopy = builder.get_object('btnCopy')
         self.model = builder.get_object('list_items')
         self.list = builder.get_object('items_view')
+
+        self.filter = self.model.filter_new()
+        self.list.set_model(self.filter)
+        self.filter.set_visible_func(self.match_func)
+        
 
         column = Gtk.TreeViewColumn('Name', Gtk.CellRendererText(), text=0)
         column.set_clickable(True)   
@@ -52,31 +60,70 @@ class  ListViewTestApp:
         column.set_visible(False)
         self.list.append_column(column)
 
+        self.statusIcon.connect('activate', self.on_statusIcon_activate)
+        self.entryFilter.connect('changed', self.on_entry_refilter)
         self.load_list_items()
-        window = builder.get_object('main_window')
-        window.set_title("Dropbox Link detector")
-        window.show_all()
+        self.window = builder.get_object('main_window')
+        self.window.set_title("Dropbox Link detector")
+        self.window.show_all()
+
+
+    def match_func(self, model, iter, data=None) :
+        query = self.entryFilter.get_buffer().get_text()
+        value = model.get_value(iter, 0)
+
+        try :
+            if query == "":
+                return True
+            else :
+                regex = re.compile(query, re.IGNORECASE)
+                if regex.findall(value):
+                    return True
+            return False
+        except:
+            return True
+
+        #if query == "":
+        #    return True
+        #elif query in value.lower():
+        #    return True
+        #return False
+
+    def on_entry_refilter(self, widget, data=None):
+        self.filter.refilter()
 
     def on_copy_clicked(self, button) :
         selection = self.list.get_selection()
-        rows = selection.get_selected_rows()
-        links = ""
+        if selection.count_selected_rows() == 0 :
+            iter2 = self.filter.get_iter_first()
+            links = ""
+            while iter2:
+                links = links + self.filter[iter2][1] + "\n"
+                iter2 = self.filter.iter_next(iter2)
 
-        for row in rows[1] :
-            iter2 = self.model.get_iter(row)
-            links += self.model[iter2][1] + "\n"
-        self.clipboard.set_text(links, -1)
+            self.clipboard.set_text(links, -1)
+        else :
+            rows = selection.get_selected_rows()
+            links = ""
+
+            for row in rows[1] :
+                iter2 = self.filter.get_iter(row)
+                links += self.filter[iter2][1] + "\n"
+            self.clipboard.set_text(links, -1)
 
     def on_statusIcon_activate(self, status) :
         if self.shown: 
-            self.shown
+            self.shown = False
+            self.window.hide()
+        else :
+            self.shown = True
+            self.window.show()
 
     def on_refresh(self, button) :
         self.load_list_items()
 
     def on_destroy(self, window):
-        #Gtk.main_quit()
-        t = 1
+        Gtk.main_quit()
 
     def on_close(self, button): 
         Gtk.main_quit()
@@ -100,12 +147,12 @@ class  ListViewTestApp:
     #        self.clipboard.set_text(model[treeiter][1], -1)
 
     def on_row_activated(self, tree, path, iter) :
-        selection = self.list.get_selection()
+        selection = self.filter.get_selection()
         rows = selection.get_selected_rows()
 
         for row in rows[1] :
-            iter2 = self.model.get_iter(row)
-            print self.model[iter2][1]
+            iter2 = self.filter.get_iter(row)
+            print self.window[iter2][1]
 
 
     def load_list_items(self) :
