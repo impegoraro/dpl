@@ -46,7 +46,7 @@ class  ListViewTestApp:
         self.btnCopy = builder.get_object('btnCopy')
         self.model = builder.get_object('list_items')
         self.list = builder.get_object('items_view')
-        self.boxRevealer = builder.get_object('boxRevealer')
+        self.revealer = builder.get_object('revealer1')
 
         self.filter = self.model.filter_new()
         self.list.set_model(self.filter)
@@ -120,7 +120,7 @@ class  ListViewTestApp:
         if keyname == 'Escape':
             self.entryFilter.set_text("")
             self.shownRevealer = False
-            self.boxRevealer.hide()
+            self.revealer.set_reveal_child(self.shownRevealer)
         elif keyname == "Down" and self.entryFilter.has_focus():
             self.list.grab_focus()
         elif keyname in ('Up', "Down", "Left", "Right", "Shift_L", "Tab", "Alt_L", "Control_L") :
@@ -131,7 +131,7 @@ class  ListViewTestApp:
             self.entryFilter.grab_focus()
             if not self.shownRevealer:
                 self.shownRevealer = True
-                self.boxRevealer.show()
+                self.revealer.set_reveal_child(self.shownRevealer)
 
         return False
 
