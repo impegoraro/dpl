@@ -58,9 +58,10 @@ class  ListViewTestApp:
         column = Gtk.TreeViewColumn('URL', Gtk.CellRendererText(), text=1)
         column.set_clickable(True)   
         column.set_resizable(True)
-        column.set_visible(False)
+        column.set_visible(True)
         self.list.append_column(column)
 
+        self.entryFilter.connect('activate', self.on_entryFilter_activate)
         self.statusIcon.connect('activate', self.on_statusIcon_activate)
         self.entryFilter.connect('changed', self.on_entry_refilter)
         self.load_list_items()
@@ -68,6 +69,9 @@ class  ListViewTestApp:
         self.window.set_title("Dropbox Link detector")
         self.window.show_all()
 
+
+    def on_entryFilter_activate(self, entry) :
+        self.btnCopy.emit('clicked')
 
     def match_func(self, model, iter, data=None) :
         query = self.entryFilter.get_buffer().get_text()
@@ -162,10 +166,11 @@ class  ListViewTestApp:
 
         listOfFiles = []
         for i in full_file_paths :
+            filename = os.path.basename(i)
             process = subprocess.Popen(["/usr/bin/dropbox", "puburl", i], stdout=subprocess.PIPE)
             out, err = process.communicate()
+            process.wait()
             path = out[0:-1]
-            filename = os.path.basename(out[0:-1])
             listOfFiles += [[i, filename, path]]
         for row in listOfFiles:
             self.model.append([row[1], row[2]])
