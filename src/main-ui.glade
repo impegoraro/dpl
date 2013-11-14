@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.16.0 on Thu Nov 14 20:52:48 2013 -->
 <interface>
   <!-- interface-requires gtk+ 3.10 -->
   <object class="GtkImage" id="image1">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
+    <property name="xalign">0</property>
+    <property name="yalign">0</property>
     <property name="stock">gtk-refresh</property>
-    <property name="icon-size">2</property>
+    <property name="pixel_size">22</property>
+    <property name="icon_size">2</property>
   </object>
   <object class="GtkListStore" id="list_items">
     <columns>
@@ -16,81 +20,121 @@
     </columns>
   </object>
   <object class="GtkWindow" id="main_window">
-    <property name="width_request">250</property>
-    <property name="height_request">354</property>
+    <property name="width_request">466</property>
+    <property name="height_request">250</property>
     <property name="can_focus">False</property>
+    <property name="resizable">False</property>
     <property name="default_width">525</property>
     <property name="default_height">350</property>
+    <property name="decorated">False</property>
+    <property name="has_resize_grip">False</property>
     <signal name="destroy" handler="on_destroy" swapped="no"/>
+    <signal name="key-press-event" handler="on_key_pressed" swapped="no"/>
     <child>
       <object class="GtkBox" id="box2">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="margin_left">2</property>
+        <property name="margin_right">2</property>
+        <property name="margin_bottom">6</property>
         <property name="orientation">vertical</property>
         <child>
-          <object class="GtkBox" id="box5">
+          <object class="GtkBox" id="boxRevealer">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="no_show_all">True</property>
             <property name="orientation">vertical</property>
             <child>
-              <object class="GtkLabel" id="label1">
+              <object class="GtkToolbar" id="toolbar1">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="margin_top">2</property>
-                <property name="xalign">0</property>
-                <property name="xpad">15</property>
-                <property name="label" translatable="yes">&lt;b&gt;_Filter:&lt;/b&gt;</property>
-                <property name="use_markup">True</property>
-                <property name="use_underline">True</property>
-                <property name="mnemonic_widget">entryFilter</property>
+                <style>
+                  <class name="inline-toolbar"/>
+                </style>
+                <child>
+                  <object class="GtkToolItem" id="toolbutton1">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <child>
+                      <object class="GtkBox" id="box5">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <object class="GtkLabel" id="label1">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="margin_top">2</property>
+                            <property name="xalign">0</property>
+                            <property name="xpad">15</property>
+                            <property name="label" translatable="yes">&lt;b&gt;_Filter:&lt;/b&gt;</property>
+                            <property name="use_markup">True</property>
+                            <property name="use_underline">True</property>
+                            <property name="mnemonic_widget">entryFilter</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkBox" id="box6">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <child>
+                              <object class="GtkEntry" id="entryFilter">
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                                <property name="margin_left">4</property>
+                                <property name="margin_top">4</property>
+                                <property name="margin_bottom">4</property>
+                                <property name="hexpand">True</property>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkButton" id="button2">
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                                <property name="margin_right">4</property>
+                                <property name="border_width">0</property>
+                                <property name="image">image1</property>
+                                <property name="always_show_image">True</property>
+                                <signal name="clicked" handler="on_refresh" swapped="no"/>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="homogeneous">True</property>
+                  </packing>
+                </child>
               </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
                 <property name="position">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkBox" id="box6">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <child>
-                  <object class="GtkEntry" id="entryFilter">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="margin_left">4</property>
-                    <property name="margin_right">4</property>
-                    <property name="margin_top">4</property>
-                    <property name="margin_bottom">4</property>
-                    <property name="hexpand">True</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkButton" id="button2">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="margin_right">4</property>
-                    <property name="image">image1</property>
-                    <property name="always_show_image">True</property>
-                    <signal name="clicked" handler="on_refresh" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
               </packing>
             </child>
           </object>

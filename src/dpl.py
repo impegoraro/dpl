@@ -29,7 +29,9 @@ class  ListViewTestApp:
         builder = Gtk.Builder()
         builder.add_from_file('src/main-ui.glade')
         builder.connect_signals(self)
+
         self.shown = True
+        self.shownRevealer = False
 
         self.statusIcon = Gtk.StatusIcon()
         self.statusIcon.set_from_stock(Gtk.STOCK_ABOUT)
@@ -44,6 +46,7 @@ class  ListViewTestApp:
         self.btnCopy = builder.get_object('btnCopy')
         self.model = builder.get_object('list_items')
         self.list = builder.get_object('items_view')
+        self.boxRevealer = builder.get_object('boxRevealer')
 
         self.filter = self.model.filter_new()
         self.list.set_model(self.filter)
@@ -69,10 +72,12 @@ class  ListViewTestApp:
         self.window.set_title("Dropbox Link detector")
         self.window.show_all()
 
-
     def on_entryFilter_activate(self, entry) :
         self.btnCopy.emit('clicked')
 
+    def on_entry_refilter(self, widget, data=None):
+        self.filter.refilter()
+    
     def match_func(self, model, iter, data=None) :
         query = self.entryFilter.get_buffer().get_text()
         value = model.get_value(iter, 0)
@@ -89,15 +94,6 @@ class  ListViewTestApp:
             return False
         except:
             return True
-
-        #if query == "":
-        #    return True
-        #elif query in value.lower():
-        #    return True
-        #return False
-
-    def on_entry_refilter(self, widget, data=None):
-        self.filter.refilter()
 
     def on_copy_clicked(self, button) :
         selection = self.list.get_selection()
@@ -117,6 +113,27 @@ class  ListViewTestApp:
                 iter2 = self.filter.get_iter(row)
                 links += self.filter[iter2][1] + "\n"
             self.clipboard.set_text(links, -1)
+
+    def on_key_pressed(self, widget, event) :
+        keyname = Gdk.keyval_name(event.keyval)
+
+        if keyname == 'Escape':
+            self.entryFilter.set_text("")
+            self.shownRevealer = False
+            self.boxRevealer.hide()
+        elif keyname == "Down" and self.entryFilter.has_focus():
+            self.list.grab_focus()
+        elif keyname in ('Up', "Down", "Left", "Right", "Shift_L", "Tab", "Alt_L", "Control_L") :
+            return False
+        elif keyname == 'Return' :
+            self.btnCopy.emit('clicked')
+        elif not self.entryFilter.has_focus():
+            self.entryFilter.grab_focus()
+            if not self.shownRevealer:
+                self.shownRevealer = True
+                self.boxRevealer.show()
+
+        return False
 
     def on_statusIcon_activate(self, status) :
         if self.shown: 
@@ -146,12 +163,6 @@ class  ListViewTestApp:
                 file_paths.append(filepath)  # Add it to the list.
         
         return file_paths  # Self-explanatory.
-    
-    #def on_tree_selection_changed(self,selection) :
-    #    model, treeiter = selection.get_selected()
-    #    if treeiter != None:
-    #        print "You selected", model[treeiter][1]
-    #        self.clipboard.set_text(model[treeiter][1], -1)
 
     def on_row_activated(self, tree, path, iter) :
         selection = self.filter.get_selection()
@@ -160,7 +171,6 @@ class  ListViewTestApp:
         for row in rows[1] :
             iter2 = self.filter.get_iter(row)
             print self.window[iter2][1]
-
 
     def load_list_items(self) :
         self.model.clear()        
