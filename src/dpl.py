@@ -58,7 +58,7 @@ class  ListViewTestApp:
         column = Gtk.TreeViewColumn('URL', Gtk.CellRendererText(), text=1)
         column.set_clickable(True)   
         column.set_resizable(True)
-        column.set_visible(True)
+        column.set_visible(False)
         self.list.append_column(column)
 
         self.entryFilter.connect('activate', self.on_entryFilter_activate)
@@ -76,12 +76,14 @@ class  ListViewTestApp:
     def match_func(self, model, iter, data=None) :
         query = self.entryFilter.get_buffer().get_text()
         value = model.get_value(iter, 0)
-
         try :
             if query == "":
                 return True
             else :
-                regex = re.compile(query, re.IGNORECASE)
+                tmp = ''
+                for ch in query :
+                    tmp = tmp + re.escape(ch) + ".*"
+                regex = re.compile(tmp, re.IGNORECASE)
                 if regex.findall(value):
                     return True
             return False
